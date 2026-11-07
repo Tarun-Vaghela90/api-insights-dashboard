@@ -13,9 +13,10 @@ function DashboardLayout() {
   const [search, setSearch] = useState('');
   const [theme, setTheme] = useState<Theme>(() => {
     try {
-      return localStorage.getItem('api-insights-theme') === 'light' ? 'light' : 'dark';
+      const storedTheme = localStorage.getItem('api-insights-theme');
+      return storedTheme === 'dark' ? 'dark' : 'light';
     } catch {
-      return 'dark';
+      return 'light';
     }
   });
 
@@ -23,7 +24,7 @@ function DashboardLayout() {
     try {
       localStorage.setItem('api-insights-theme', theme);
     } catch {
-      // Theme still works for the current page if storage is unavailable.
+      // Some browsers block storage access; theme still works in memory.
     }
   }, [theme]);
 
@@ -35,7 +36,7 @@ function DashboardLayout() {
           search={search}
           onSearchChange={setSearch}
           theme={theme}
-          onToggleTheme={() => setTheme((current) => current === 'dark' ? 'light' : 'dark')}
+          onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
         />
         <main className="mx-auto w-full max-w-[1600px] flex-1 overflow-auto p-4 md:p-8">
           <Outlet context={{ search }} />
@@ -49,7 +50,7 @@ function PageHeading({ eyebrow, title, description }: { eyebrow: string; title: 
   return (
     <div className="page-heading mb-7">
       <p className="muted-label">{eyebrow}</p>
-      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">{title}</h1>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-400 sm:text-base">{description}</p>
     </div>
   );

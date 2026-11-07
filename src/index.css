@@ -2,44 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-optical-sizing: auto; }
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
 * { box-sizing: border-box; }
 html, body, #root { min-height: 100%; margin: 0; }
 body { min-width: 320px; }
 button, input { font: inherit; }
-button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid #06b6d4; outline-offset: 2px; }
-.dashboard-shell { --app-bg: #080d18; --surface-bg: #111827; --surface-border: #263246; --header-bg: rgba(8,13,24,.88); --sidebar-bg: #0c1321; --primary-text: #f1f5f9; --secondary-text: #a1adbd; --muted-text: #728096; --field-bg: #111827; background: var(--app-bg); color: var(--primary-text); transition: background-color .2s ease, color .2s ease; }
-.dashboard-shell.theme-light { --app-bg: #f4f7fb; --surface-bg: #ffffff; --surface-border: #e2e8f0; --header-bg: rgba(255,255,255,.92); --sidebar-bg: #ffffff; --primary-text: #172033; --secondary-text: #526176; --muted-text: #718096; --field-bg: #f8fafc; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid #14b8a6; outline-offset: 2px; }
+
+.dashboard-shell {
+  --app-bg: #f5f6f3;
+  --panel: #ffffff;
+  --panel-strong: #f7f7f5;
+  --panel-border: #e7e5e4;
+  --header-bg: rgba(255,255,255,0.82);
+  --sidebar-bg: #fafaf9;
+  --text: #18181b;
+  --muted: #6b7280;
+  --soft: #8b95a7;
+  --accent: #0f766e;
+  --accent-soft: rgba(15,118,110,0.08);
+  --input: #f8fafc;
+  background: var(--app-bg);
+  color: var(--text);
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.dashboard-shell.theme-dark {
+  --app-bg: #111827;
+  --panel: #1b2330;
+  --panel-strong: #171f2d;
+  --panel-border: #2a3345;
+  --header-bg: rgba(15,23,42,0.76);
+  --sidebar-bg: #111827;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --soft: #a0aec0;
+  --accent: #67e8f9;
+  --accent-soft: rgba(103,232,249,0.12);
+  --input: #0f172a;
+}
+
 .dashboard-main { background: var(--app-bg); }
-.dashboard-header { background: var(--header-bg); border-color: var(--surface-border); }
-.dashboard-sidebar { background: var(--sidebar-bg); border-color: var(--surface-border); }
-.surface { background: var(--surface-bg) !important; border-color: var(--surface-border) !important; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.04) !important; border-radius: 14px !important; }
-.dashboard-input, .icon-button, .profile-chip { background: var(--field-bg); border-color: var(--surface-border); color: var(--primary-text); }
-.icon-button { color: var(--secondary-text); transition: color .18s ease, border-color .18s ease, background .18s ease; }
-.icon-button:hover { color: var(--primary-text); border-color: #06b6d4; }
-.sidebar-link-active { background: rgba(6,182,212,.12); color: #0891b2; }
-.theme-dark .sidebar-link-active { color: #67e8f9; }
-.muted-label { color: var(--muted-text) !important; font-size: .68rem !important; font-weight: 650; letter-spacing: .12em !important; }
-.theme-light .text-white { color: #172033 !important; }
-.theme-light .text-slate-100 { color: #253247 !important; }
-.theme-light .text-slate-200, .theme-light .text-slate-300 { color: #526176 !important; }
-.theme-light .text-slate-400 { color: #66758a !important; }
+.dashboard-header { background: var(--header-bg); border-color: var(--panel-border); }
+.dashboard-sidebar { background: var(--sidebar-bg); border-color: var(--panel-border); }
+
+.surface {
+  background: var(--panel) !important;
+  border: 1px solid var(--panel-border) !important;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.02), 0 10px 28px rgba(15, 23, 42, 0.04) !important;
+  border-radius: 16px !important;
+}
+
+.dashboard-input, .icon-button, .profile-chip {
+  background: var(--input);
+  border-color: var(--panel-border);
+  color: var(--text);
+}
+
+.icon-button {
+  color: var(--soft);
+}
+
+.icon-button:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.sidebar-link-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.muted-label {
+  color: var(--muted) !important;
+  font-size: .68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em !important;
+}
+
+.theme-light .text-white,
+.theme-light .text-slate-100,
+.theme-light .text-slate-200,
+.theme-light .text-slate-300,
+.theme-light .text-slate-400,
+.theme-light .text-slate-500,
+.theme-light .text-slate-600,
+.theme-light .text-slate-700,
+.theme-light .text-cyan-300,
+.theme-light .text-cyan-500,
+.theme-light .text-amber-300,
+.theme-light .text-amber-400,
+.theme-light .text-emerald-400,
+.theme-light .bg-slate-950,
+.theme-light .bg-slate-900,
+.theme-light .bg-slate-800,
+.theme-light .bg-slate-700,
+.theme-light .bg-slate-600,
+.theme-light .bg-slate-500 {
+  color: inherit !important;
+}
+
+.theme-light .text-white { color: var(--text) !important; }
+.theme-light .text-slate-300 { color: var(--muted) !important; }
+.theme-light .text-slate-400 { color: #64748b !important; }
 .theme-light .text-slate-500 { color: #718096 !important; }
-.theme-light .border-slate-800, .theme-light .border-slate-800\/80, .theme-light .border-slate-700 { border-color: #e2e8f0 !important; }
-.theme-light .bg-slate-950, .theme-light .bg-slate-950\/70, .theme-light .bg-slate-950\/60 { background-color: #fff !important; }
-.theme-light .bg-slate-900, .theme-light .bg-slate-900\/80, .theme-light .bg-slate-900\/60, .theme-light .bg-slate-900\/70, .theme-light .bg-slate-800, .theme-light .bg-slate-800\/60 { background-color: #f1f5f9 !important; }
-.theme-light .bg-slate-800\/60 { background-color: #f1f5f9 !important; }
-.theme-light .bg-slate-800 { background-color: #e8eef5 !important; }
-.theme-light table thead { background-color: #f8fafc !important; }
-.theme-light table tbody tr { border-color: #e2e8f0 !important; }
-.theme-light .text-cyan-300 { color: #0e7490 !important; }
-.theme-light .text-amber-300 { color: #b45309 !important; }
-.theme-light .text-amber-400 { color: #b45309 !important; }
-.theme-light .text-emerald-400 { color: #047857 !important; }
-.theme-light .bg-cyan-500\/10 { background-color: #cffafe !important; }
-.theme-light .bg-cyan-500\/15 { background-color: #cffafe !important; }
-.theme-light .bg-violet-500\/15 { background-color: #ede9fe !important; }
-.theme-light .bg-amber-500\/15 { background-color: #fef3c7 !important; }
-.theme-light .bg-emerald-500\/15 { background-color: #d1fae5 !important; }
-.theme-light img { background-color: #e8eef5; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+.theme-light .bg-slate-900, .theme-light .bg-slate-800, .theme-light .bg-slate-950, .theme-light .bg-slate-700 { background-color: var(--panel-strong) !important; }
+.theme-light .bg-slate-900\/80, .theme-light .bg-slate-900\/60, .theme-light .bg-slate-900\/70 { background-color: rgba(255,255,255,0.82) !important; }
+.theme-light .border-slate-800, .theme-light .border-slate-700, .theme-light .border-slate-600 { border-color: var(--panel-border) !important; }
+.theme-light .bg-cyan-500\/10 { background-color: rgba(14,165,233,0.08) !important; }
+.theme-light .bg-cyan-500\/15 { background-color: rgba(14,165,233,0.08) !important; }
+.theme-light .bg-violet-500\/15 { background-color: rgba(124,58,237,0.08) !important; }
+.theme-light .bg-amber-500\/15 { background-color: rgba(245,158,11,0.08) !important; }
+.theme-light .bg-emerald-500\/15 { background-color: rgba(16,185,129,0.08) !important; }
+.theme-light img { background: #eff3f8; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
