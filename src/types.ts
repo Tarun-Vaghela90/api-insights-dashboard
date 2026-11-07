@@ -6,7 +6,7 @@ export type Product = {
   rating: number;
   category: string;
   thumbnail: string;
-  brand: string;
+  brand?: string;
   stock: number;
   discountPercentage: number;
   images?: string[];
@@ -17,4 +17,9 @@ export type ProductsResponse = {
   total: number;
   skip: number;
   limit: number;
+};
+
+export type ProductCatalog = {
+  products: Product[];
+  total: number;
 };

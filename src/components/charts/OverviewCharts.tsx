@@ -1,139 +1,77 @@
-import { BarChart, Bar, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Product } from '../../types';
 
-const COLORS = ['#2dd4bf', '#60a5fa', '#a78bfa', '#fbbf24', '#f472b6', '#34d399', '#fb7185'];
+const COLORS = ['#0f766e', '#3b82a0', '#7c83a8', '#b08b58', '#7f9b76', '#a16b6b', '#607d9b', '#8b789d'];
+const tooltipStyle = { backgroundColor: 'var(--panel)', border: '1px solid var(--panel-border)', borderRadius: '10px', color: 'var(--text)', boxShadow: '0 8px 24px rgba(15,23,42,.12)' };
+const gridColor = 'var(--chart-grid)';
+const tickColor = 'var(--chart-text)';
+
+function groupProducts(products: Product[]) {
+  return products.reduce<Record<string, Product[]>>((groups, product) => {
+    (groups[product.category] ??= []).push(product);
+    return groups;
+  }, {});
+}
 
 export function CategoryBarChart({ products }: { products: Product[] }) {
-  const data = Object.entries(
-    products.reduce<Record<string, number>>((acc, product) => {
-      acc[product.category] = (acc[product.category] || 0) + 1;
-      return acc;
-    }, {})
-  )
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count);
-
+  const data = Object.entries(groupProducts(products)).map(([name, items]) => ({ name, count: items.length })).sort((a, b) => b.count - a.count);
   return (
-    <div className="surface h-[330px] p-5">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="muted-label">Overview</p>
-          <h3 className="text-lg font-semibold text-white">Products by category</h3>
-        </div>
-      </div>
-      <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-          <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} angle={-20} textAnchor="end" height={55} />
-          <YAxis stroke="#94a3b8" />
-          <Tooltip
-            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '12px' }}
-            formatter={(value: number) => [`${value}`, 'Products']}
-          />
-          <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#2dd4bf" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <section className="surface h-[350px] min-w-0 p-5 sm:p-6">
+      <div className="mb-5"><p className="muted-label">CATALOG</p><h2 className="mt-1 text-lg font-semibold text-white">Products by category</h2></div>
+      <ResponsiveContainer width="100%" height="78%"><BarChart data={data} margin={{ top: 4, right: 8, left: -18, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} /><XAxis dataKey="name" stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} interval={0} angle={-18} textAnchor="end" height={48} /><YAxis allowDecimals={false} stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [value.toLocaleString(), 'Products']} /><Bar dataKey="count" name="Product count" fill="#43877d" radius={[5, 5, 0, 0]} maxBarSize={44} />
+      </BarChart></ResponsiveContainer>
+    </section>
   );
 }
 
 export function PriceBarChart({ products }: { products: Product[] }) {
-  const grouped = products.reduce<Record<string, number[]>>((acc, product) => {
-    if (!acc[product.category]) acc[product.category] = [];
-    acc[product.category].push(product.price);
-    return acc;
-  }, {});
-
-  const data = Object.entries(grouped)
-    .map(([name, prices]) => ({
-      name,
-      avgPrice: prices.reduce((sum, price) => sum + price, 0) / prices.length
-    }))
-    .sort((a, b) => b.avgPrice - a.avgPrice);
-
+  const data = Object.entries(groupProducts(products)).map(([name, items]) => ({ name, average: items.reduce((sum, product) => sum + product.price, 0) / items.length })).sort((a, b) => b.average - a.average);
   return (
-    <div className="surface h-[330px] p-5">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="muted-label">Pricing</p>
-          <h3 className="text-lg font-semibold text-white">Average price by category</h3>
-        </div>
-      </div>
-      <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-          <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} angle={-20} textAnchor="end" height={55} />
-          <YAxis stroke="#94a3b8" />
-          <Tooltip
-            formatter={(value: number) => [`$${value.toFixed(2)}`, 'Avg price']}
-            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '12px' }}
-          />
-          <Bar dataKey="avgPrice" radius={[8, 8, 0, 0]} fill="#60a5fa" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <section className="surface h-[350px] min-w-0 p-5 sm:p-6">
+      <div className="mb-4"><p className="muted-label">PRICING</p><h2 className="mt-1 text-lg font-semibold text-white">Average price by category</h2></div>
+      <ResponsiveContainer width="100%" height="78%"><BarChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} /><XAxis dataKey="name" stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} interval={0} angle={-18} textAnchor="end" height={48} /><YAxis stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} tickFormatter={(value: number) => `$${value}`} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [`$${value.toFixed(2)}`, 'Average price']} /><Bar dataKey="average" name="Average price" fill="#668eaa" radius={[5, 5, 0, 0]} maxBarSize={44} />
+      </BarChart></ResponsiveContainer>
+    </section>
   );
 }
 
 export function CategoryDonutChart({ products }: { products: Product[] }) {
-  const data = Object.entries(
-    products.reduce<Record<string, number>>((acc, product) => {
-      acc[product.category] = (acc[product.category] || 0) + 1;
-      return acc;
-    }, {})
-  ).map(([name, value]) => ({ name, value }));
-
+  const data = Object.entries(groupProducts(products)).map(([name, items]) => ({ name, value: items.length }));
   return (
-    <div className="surface h-[330px] p-5">
-      <div className="mb-5">
-        <p className="muted-label">Distribution</p>
-        <h3 className="text-lg font-semibold text-white">Product distribution by category</h3>
-      </div>
-      <ResponsiveContainer width="100%" height="80%">
-        <PieChart>
-          <Pie data={data} dataKey="value" nameKey="name" innerRadius={52} outerRadius={100} paddingAngle={3}>
-            {data.map((entry, index) => (
-              <Cell key={`${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value: number) => [`${value}`, 'Products']}
-            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '12px' }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
+    <section className="surface h-[350px] min-w-0 p-5 sm:p-6">
+      <div className="mb-3"><p className="muted-label">DISTRIBUTION</p><h2 className="mt-1 text-lg font-semibold text-white">Product distribution</h2></div>
+      <ResponsiveContainer width="100%" height="80%"><PieChart><Pie data={data} dataKey="value" nameKey="name" innerRadius={58} outerRadius={100} paddingAngle={2}>
+        {data.map((entry, index) => <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />)}
+      </Pie><Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [value.toLocaleString(), 'Products']} /></PieChart></ResponsiveContainer>
+    </section>
+  );
+}
+
+export function CategoryRatingChart({ products }: { products: Product[] }) {
+  const data = Object.entries(groupProducts(products)).map(([name, items]) => ({ name, rating: items.reduce((sum, product) => sum + product.rating, 0) / items.length })).sort((a, b) => b.rating - a.rating);
+  return (
+    <section className="surface h-[350px] min-w-0 p-5 sm:p-6">
+      <div className="mb-4"><p className="muted-label">CUSTOMER RATINGS</p><h2 className="mt-1 text-lg font-semibold text-white">Average rating by category</h2></div>
+      <ResponsiveContainer width="100%" height="78%"><BarChart data={data} margin={{ top: 8, right: 10, left: 0, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} /><XAxis dataKey="name" stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} interval={0} angle={-18} textAnchor="end" height={48} /><YAxis domain={[0, 5]} stroke={tickColor} tick={{ fill: tickColor, fontSize: 11 }} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [value.toFixed(2), 'Average rating']} /><Bar dataKey="rating" name="Average rating" fill="#b08b58" radius={[5, 5, 0, 0]} maxBarSize={44} />
+      </BarChart></ResponsiveContainer>
+    </section>
   );
 }
 
 export function TopRatedProducts({ products }: { products: Product[] }) {
   const topProducts = [...products].sort((a, b) => b.rating - a.rating).slice(0, 5);
-
   return (
-    <div className="surface p-5">
-      <div className="mb-5">
-        <p className="muted-label">Leaders</p>
-        <h3 className="text-lg font-semibold text-white">Top-rated products</h3>
-      </div>
-      <div className="space-y-4">
-        {topProducts.map((product, index) => (
-          <div key={product.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-sm font-semibold text-cyan-300">
-                #{index + 1}
-              </div>
-              <div>
-                <p className="font-medium text-white">{product.title}</p>
-                <p className="text-sm text-slate-400">{product.category}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-medium text-amber-300">{product.rating.toFixed(1)}</p>
-              <p className="text-xs text-slate-400">rating</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <section className="surface p-5 sm:p-6">
+      <div className="mb-5"><p className="muted-label">TOP PERFORMERS</p><h2 className="mt-1 text-lg font-semibold text-white">Top-rated products</h2></div>
+      <ol className="space-y-3">{topProducts.map((product, index) => <li key={product.id} className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+        <div className="flex min-w-0 items-center gap-3"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-200">{String(index + 1).padStart(2, '0')}</span><div className="min-w-0"><p className="truncate text-sm font-medium text-white">{product.title}</p><p className="truncate text-xs capitalize text-slate-400">{product.category}</p></div></div><span className="shrink-0 text-sm font-semibold text-amber-600">★ {product.rating.toFixed(1)}</span>
+      </li>)}</ol>
+    </section>
   );
 }
